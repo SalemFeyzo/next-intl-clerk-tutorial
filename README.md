@@ -1,4 +1,4 @@
-# [Next-intl](https://next-intl-docs.vercel.app/) and [Clerk](https://clerk.com/) with [NExt.js 14](https://nextjs.org/) AppRouter
+# [Next-intl](https://next-intl-docs.vercel.app/) and [Clerk](https://clerk.com/) with [Next.js 14](https://nextjs.org/) AppRouter
 
 In this guide you will learn how to set up internationalization (i18n) with auth in your Next.js app (AppRouter).
 
