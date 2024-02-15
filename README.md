@@ -26,6 +26,10 @@ In this guide you will learn how to set up internationalization (i18n) with auth
   - [2.1 Clerk Installation](#clerk-installation)
   - [2.2 Clerk Environment Variables](#clerk-environment-variables)
   - [2.3 Clerk Environment Variables Types](#clerk-environment-variables-types)
+  - [2.4 Clerk Provider](#clerk-provider)
+  - [2.5 Clerk Middleware](#clerk-middleware)
+  - [2.6 Header and Navbar Protected Items](#header-and-navbar-protected-items)
+  - [2.7 Clerk Sign In and Sign Up Pages](#clerk-sign-in-and-sign-up-pages)
 
 ## Project setup:
 
@@ -207,9 +211,11 @@ In my case I created `app/[locale]/about`, `app/[locale]/dashboard`, `app/[local
 │   ├── layout.tsx
 │   ├── page.tsx
 │   ├── sign-in
-│   │     └── page.tsx
+│   │   └── [[...sign-in]]
+│   │       └── page.tsx
 │   └── sign-up
-│         └── page.tsx
+│       └── [[...sign-up]]
+│           └── page.tsx
 ```
 
 ### Messages:
@@ -401,7 +407,6 @@ Now create the `middleware.ts` file in outside the app directory:
 
 ```ts
 import createMiddleware from "next-intl/middleware";
-import createMiddleware from "next-intl/middleware";
 import {
   locales,
   localePrefix,
@@ -587,7 +592,7 @@ import { useTranslations } from "next-intl";
 import NavigationLink from "./NavigationLink";
 
 export default function Navigation() {
-  const t = useTranslations("default.Navigation");
+  const t = useTranslations("default.navbar.links");
 
   return (
     <nav style={{ display: "flex", gap: 10 }}>
@@ -713,5 +718,206 @@ declare namespace NodeJS {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
     CLERK_SECRET_KEY: string;
   }
+}
+```
+
+### Clerk Provider:
+
+Now let's make `MyClerkProvider.tsx` inside `component` directory:
+
+```tsx
+"use client";
+
+import { ClerkProvider } from "@clerk/nextjs";
+import { arSA, enUS, trTR } from "@clerk/localizations";
+import { useLocale } from "next-intl";
+
+type Props = {
+  children: React.ReactNode;
+};
+
+export default function MyClerkProvider({ children }: Props) {
+  const locale = useLocale();
+
+  return (
+    <ClerkProvider
+      localization={locale === "ar" ? arSA : locale === "tr" ? trTR : enUS}
+      appearance={{
+        layout: {
+          socialButtonsPlacement: "top",
+          socialButtonsVariant: "iconButton",
+          termsPageUrl: "https://clerk.com/terms",
+        },
+      }}
+    >
+      {children}
+    </ClerkProvider>
+  );
+}
+```
+
+Now add the provider to the `layout.tsx` in `app/[locale]/`:
+
+```diff
+.....
+
+
++ import MyClerkProvider from "@/components/MyClerkProvider";
+
+.....
+
+
+export default function RootLayout({
+  children,
+  params: { locale },
+}: Readonly<Props>) {
+  const messages = useMessages();
+
+  return (
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <body>
++            <MyClerkProvider>
+              <Header />
+              <main>{children}</main>
++            </MyClerkProvider>
+        </body>
+      </NextIntlClientProvider>
+    </html>
+  );
+}
+```
+
+### Clerk Middleware:
+
+```ts
+import { authMiddleware } from "@clerk/nextjs";
+import createMiddleware from "next-intl/middleware";
+import {
+  locales,
+  localePrefix,
+  defaultLocale,
+  localeDetection,
+  pathnames,
+} from "@/navigation";
+
+const intlMiddleware = createMiddleware({
+  locales,
+  localePrefix,
+  defaultLocale,
+  localeDetection,
+  pathnames,
+});
+
+export default authMiddleware({
+  beforeAuth: (req) => {
+    // Execute next-intl middleware before Clerk's auth middleware
+    return intlMiddleware(req);
+  },
+  publicRoutes: (req) => !req.url.includes("/dashboard"),
+  // debug: true,
+});
+
+// only applies this middleware to files in the app directory
+export const config = {
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
+};
+```
+
+### Header and Navbar Protected Items:
+
+Edit the `Navigation.tsx` component:
+
+```tsx
+import { useTranslations } from "next-intl";
+import NavigationLink from "./NavigationLink";
+import { auth } from "@clerk/nextjs";
+
+export default function Navigation() {
+  const t = useTranslations("default.navbar.links");
+  const { userId } = auth();
+
+  return (
+    <nav style={{ display: "flex", gap: 10 }}>
+      <NavigationLink href="/">{t("home")}</NavigationLink>
+      <NavigationLink href="/about">{t("about")}</NavigationLink>
+      {!userId && (
+        <NavigationLink href="/sign-in">{t("sign-in")}</NavigationLink>
+      )}
+      {userId && (
+        <NavigationLink href="/dashboard">{t("dashboard")}</NavigationLink>
+      )}
+    </nav>
+  );
+}
+```
+
+And `Header.tsx`:
+
+```tsx
+import { Link } from "@/navigation";
+import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
+import Navigation from "./Navigation";
+import LocaleSwitcher from "./LocaleSwitcher";
+
+export default async function Header() {
+  return (
+    <header className="flex items-center h-20 gap-4 px-4 border-b border-black border-solid sm:px-8 border-opacity-20">
+      <Link href="/" className="flex items-center h-20 gap-2 sm:gap-4">
+        LOGO
+      </Link>
+      <Navigation />
+      <div className="grow" />
+      <LocaleSwitcher />
+      <SignedIn>
+        <div className="hidden sm:block">
+          <OrganizationSwitcher afterCreateOrganizationUrl="/dashboard" />
+        </div>
+        <div className="block sm:hidden">
+          <OrganizationSwitcher
+            afterCreateOrganizationUrl="/dashboard"
+            appearance={{
+              elements: {
+                organizationSwitcherTriggerIcon: `hidden`,
+                organizationPreviewTextContainer: `hidden`,
+                organizationSwitcherTrigger: `pr-0`,
+              },
+            }}
+          />
+        </div>
+        <UserButton afterSignOutUrl="/" />
+      </SignedIn>
+    </header>
+  );
+}
+```
+
+### Clerk Sign In and Sign Up Pages:
+
+The `sign-in/[[...sign-in]]/page.tsx`:
+
+```tsx
+import { SignIn } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex justify-center py-24">
+      <SignIn signUpUrl="/sign-up" afterSignInUrl="/dashboard" />
+    </div>
+  );
+}
+```
+
+The `sign-up/[[...sign-up]]/page.tsx`:
+
+```tsx
+import { SignUp } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex justify-center py-24">
+      <SignUp signInUrl="/sign-in" afterSignUpUrl="/dashboard" />
+    </div>
+  );
 }
 ```
