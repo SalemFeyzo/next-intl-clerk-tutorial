@@ -630,19 +630,11 @@ export default async function Header() {
 ### Add Header Component to the RootLayout in `app/[locale]/` directory:
 
 ```diff
-import type { Metadata } from "next";
-import {
-  getFormatter,
-  getNow,
-  getTimeZone,
-  getTranslations,
-} from "next-intl/server";
+....
 import { NextIntlClientProvider, useMessages } from "next-intl";
 + import Header from "@/components/Header";
 
-//
-
-//
+....
 
 export default function RootLayout({ children, params: { locale } }: Props) {
   const messages = useMessages();
