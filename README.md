@@ -2,6 +2,31 @@
 
 In this guide you will learn how to set up internationalization (i18n) with auth in your Next.js app (AppRouter).
 
+- [1 Project Setup](#project-setup)
+- [2 Next-intl Setup](#next-intl-setup)
+  - [2.1 next-intl Installation](#installation)
+  - [2.2 next-intl Directories Setup](#directories-setup)
+  - [2.3 next-intl Messages](#messages)
+  - [2.4 next-intl Navigation](#next-intl-navigation)
+  - [2.5 next-intl Config File](#next-intl-config-file)
+  - [2.6 next-intl Plugin](#next-intl-plugin)
+  - [2.7 next-intl Middleware](#middleware)
+  - [2.8 next-intl Messages and Environment Variables Types](#messages-and-environment-variables-types)
+    - [2.8.1 Messages Types](#messages-types)
+    - [2.8.2 Environment Variables Types](#environment-variables-types)
+  - [2.9 next-intl Provider and Localized Metadata](#next-intl-provider-and-localized-metadata-in-applocalelayouttsx)
+  - [2.10 next-intl Dynamic OpenGraph Image ](#dynamic-opengraph-image)
+  - [2.11 next-intl Not Found page](#not-found-page-and-other-pages-translations)
+  - [2.12 next-intl Custom NavigationLink Component](#custom-navigationlink-component)
+  - [2.13 next-intl Navigation Component](#navigation-component)
+  - [2.14 next-intl LocaleSwitcher Component](#localeswitcher-component)
+  - [2.15 next-intl Header Component](#header-component)
+  - [2.16 next-intl Add Header Component to The RootLayout](#add-header-component-to-the-rootlayout-in-applocale-directory)
+- [2 Clerk Setup](#clerk-setup)
+  - [2.1 Clerk Installation](#clerk-installation)
+  - [2.2 Clerk Environment Variables](#clerk-environment-variables)
+  - [2.3 Clerk Environment Variables Types](#clerk-environment-variables-types)
+
 ## Project setup:
 
 Created a new Next.js App Router project using:
@@ -649,5 +674,44 @@ export default function RootLayout({ children, params: { locale } }: Props) {
       </NextIntlClientProvider>
     </html>
   );
+}
+```
+
+## Clerk Setup:
+
+Go ahead to [Clerk website](https://dashboard.clerk.com/) create new project and get the secret and public keys from there.
+
+### Clerk Installation:
+
+```bash
+npm i @clerk/nextjs @clerk/localizations
+```
+
+### Clerk Environment Variables:
+
+Now after you have got public and secret keys from Clerk dashboard put them in `.env.local` file:
+
+```bash
+NODE_ENV=development
+SITE_URL=http://localhost:3000
+NEXT_PUBLIC_LOCALE_PREFIX=as-needed
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-public-key
+CLERK_SECRET_KEY=your-secret-key
+```
+
+### Clerk Environment Variables Types:
+
+Then add the types to `environment.d.ts` so we get autocompletion:
+
+```ts
+//eslint-disable-next-line
+declare namespace NodeJS {
+  export interface ProcessEnv {
+    NODE_ENV: "development" | "production" | "test";
+    SITE_URL: string;
+    NEXT_PUBLIC_LOCALE_PREFIX: string;
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
+    CLERK_SECRET_KEY: string;
+  }
 }
 ```
