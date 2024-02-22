@@ -25,6 +25,12 @@
             "dashboard": {
                 "title": "Kontrol Paneli"
             },
+            "sign-in": {
+                "title": "Giriş Yap"
+            },
+            "sign-up": {
+                "title": "Kayıt Ol"
+            },
             "home": {
                 "title": "Ana sayfa"
             },

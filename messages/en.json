@@ -25,6 +25,12 @@
             "dashboard": {
                 "title": "Dashboard"
             },
+            "sign-in": {
+                "title": "Sign In"
+            },
+            "sign-up": {
+                "title": "Sign Up"
+            },
             "home": {
                 "title": "Home page"
             },
