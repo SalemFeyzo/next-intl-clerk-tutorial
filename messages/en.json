@@ -1,0 +1,40 @@
+{
+    "default": {
+        "navbar": {
+            "actions": {
+                "themeSwitcher": {
+                    "dark": "Dark",
+                    "light": "Light",
+                    "system": "System"
+                }
+            },
+            "links": {
+                "about": "About",
+                "dashboard": "Dashboard",
+                "home": "Home",
+                "sign-in": "Sign In"
+            }
+        },
+        "openGraph": {
+            "title": "next-intl & Clerk example"
+        },
+        "pages": {
+            "about": {
+                "title": "About Us"
+            },
+            "dashboard": {
+                "title": "Dashboard"
+            },
+            "home": {
+                "title": "Home page"
+            },
+            "notFound": {
+                "title": "Page not found (404)"
+            }
+        },
+        "rootLayoutMetadata": {
+            "description": "This is an example of using next-intl & Clerk.",
+            "title": "next-intl & Clerk example"
+        }
+    }
+}
