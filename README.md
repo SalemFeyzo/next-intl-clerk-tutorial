@@ -1,4 +1,9 @@
 # [Next-intl](https://next-intl-docs.vercel.app/) and [Clerk](https://clerk.com/) with [Next.js 14](https://nextjs.org/) AppRouter
+## Resources:
+- next-intl docs: https://next-intl-docs.vercel.app/docs/getting-started/app-router
+- next-intl official Github example: https://github.com/amannn/next-intl/tree/main/examples/example-app-router-playground
+- Clerk Docs: https://clerk.com/docs/quickstarts/nextjs
+- Clerk + next-intl middleware Docs: https://clerk.com/docs/references/nextjs/auth-middleware#use-before-auth-to-execute-middleware-before-authentication
 
 In this guide you will learn how to set up internationalization (i18n) with auth in your Next.js app (AppRouter).
 
