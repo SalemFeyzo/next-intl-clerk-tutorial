@@ -9,6 +9,7 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 
 import "../globals.css";
 import Header from "@/components/Header";
+import MyClerkProvider from "@/components/MyClerkProvider";
 
 type Props = {
   children: React.ReactNode;
@@ -46,8 +47,10 @@ export default function RootLayout({ children, params: { locale } }: Props) {
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body>
-          <Header />
-          <main>{children}</main>
+          <MyClerkProvider>
+            <Header />
+            <main>{children}</main>
+          </MyClerkProvider>
         </body>
       </NextIntlClientProvider>
     </html>

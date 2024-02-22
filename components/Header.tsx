@@ -1,6 +1,8 @@
 import { Link } from "@/navigation";
 import Navigation from "./Navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
+
 
 export default async function Header() {
     return (
@@ -11,6 +13,24 @@ export default async function Header() {
             <Navigation />
             <div className="grow" />
             <LocaleSwitcher />
+            <SignedIn>
+                <div className="hidden sm:block">
+                    <OrganizationSwitcher afterCreateOrganizationUrl="/dashboard" />
+                </div>
+                <div className="block sm:hidden">
+                    <OrganizationSwitcher
+                        afterCreateOrganizationUrl="/dashboard"
+                        appearance={{
+                            elements: {
+                                organizationSwitcherTriggerIcon: `hidden`,
+                                organizationPreviewTextContainer: `hidden`,
+                                organizationSwitcherTrigger: `pr-0`,
+                            },
+                        }}
+                    />
+                </div>
+                <UserButton afterSignOutUrl="/sign-in" />
+            </SignedIn>
         </header>
     );
 }
