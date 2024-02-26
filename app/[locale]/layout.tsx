@@ -40,7 +40,7 @@ export async function generateMetadata({
   };
 }
 
-export default function RootLayout({ children, params: { locale } }: Props) {
+export default function LocaleLayout({ children, params: { locale } }: Props) {
   const messages = useMessages();
 
   return (
