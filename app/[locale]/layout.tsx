@@ -4,18 +4,23 @@ import {
   getNow,
   getTimeZone,
   getTranslations,
+  unstable_setRequestLocale,
 } from "next-intl/server";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 
 import "../globals.css";
 import Header from "@/components/Header";
 import MyClerkProvider from "@/components/MyClerkProvider";
+import { locales } from "@/navigation";
 
 type Props = {
   children: React.ReactNode;
   params: { locale: string };
 };
 
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 export async function generateMetadata({
   params: { locale },
 }: Omit<Props, "children">): Promise<Metadata> {
@@ -33,6 +38,9 @@ export async function generateMetadata({
     ),
     title: t("title"),
     description: t("description"),
+    twitter: {
+      card: "summary_large_image",
+    },
     other: {
       currentYear: formatter.dateTime(now, { year: "numeric" }),
       timeZone: timeZone || "N/A",
@@ -42,6 +50,7 @@ export async function generateMetadata({
 
 export default function LocaleLayout({ children, params: { locale } }: Props) {
   const messages = useMessages();
+  unstable_setRequestLocale(locale);
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
