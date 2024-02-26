@@ -1,5 +1,8 @@
 import { SignIn } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
+import type { ServerRuntime } from "next";
+
+export const runtime: ServerRuntime = "edge";
 
 export default function MySignIn() {
   const t = useTranslations("default.pages.sign-in");
