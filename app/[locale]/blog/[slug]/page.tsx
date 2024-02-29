@@ -1,4 +1,4 @@
-import { getPost, getPosts } from "@/contentful.client";
+import { getPost, getPosts } from "@/lib/contentful";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // export const revalidate = 1000;

@@ -6,7 +6,7 @@ import {
   defaultLocale,
   localeDetection,
   pathnames,
-} from "@/navigation";
+} from "@/lib/navigation";
 
 const intlMiddleware = createMiddleware({
   locales,

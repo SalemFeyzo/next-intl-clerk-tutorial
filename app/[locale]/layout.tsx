@@ -11,7 +11,7 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 import "../globals.css";
 import Header from "@/components/Header";
 import MyClerkProvider from "@/components/MyClerkProvider";
-import { locales } from "@/navigation";
+import { locales } from "@/lib/navigation";
 
 type Props = {
   children: React.ReactNode;

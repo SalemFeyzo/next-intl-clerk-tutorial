@@ -1,7 +1,7 @@
 import { unstable_setRequestLocale } from "next-intl/server";
 
-import { Link } from "@/navigation";
-import { getPosts } from "@/contentful.client";
+import { Link } from "@/lib/navigation";
+import { getPosts } from "@/lib/contentful";
 
 export default async function Blogs({
   params: { locale },
@@ -21,7 +21,7 @@ export default async function Blogs({
             href={{
               pathname: "/blog/[slug]",
               params: {
-                slug: encodeURIComponent(item.fields.slug.en as string),
+                slug: item.fields.slug.en as string,
               },
             }}
           >

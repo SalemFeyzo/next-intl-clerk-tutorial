@@ -1,4 +1,4 @@
-import { Link } from "@/navigation";
+import { Link } from "@/lib/navigation";
 import Navigation from "./Navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
