@@ -10,6 +10,7 @@
             },
             "links": {
                 "about": "About",
+                "blog": "Blog",
                 "dashboard": "Dashboard",
                 "home": "Home",
                 "sign-in": "Sign In"

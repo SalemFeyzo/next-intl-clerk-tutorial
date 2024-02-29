@@ -1,15 +1,20 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useParams } from "next/navigation";
 import { usePathname, useRouter } from "@/navigation";
 
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { slug } = useParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    router.push(pathname, { locale: e.target.value });
+    router.push(
+      { pathname, params: { slug: slug as string } },
+      { locale: e.target.value }
+    );
   };
 
   return (
