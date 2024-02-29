@@ -3,6 +3,13 @@
 import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 import { usePathname, useRouter } from "@/lib/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function LocaleSwitcher() {
   const locale = useLocale();
@@ -10,17 +17,26 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
   const { slug } = useParams();
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (value: string) => {
     router.push(
       { pathname, params: { slug: slug as string } },
-      { locale: e.target.value }
+      { locale: value }
     );
   };
 
   return (
-    <select value={locale} onChange={handleChange}>
-      <option value="en">English</option>
-      <option value="ar">العربية</option>
-    </select>
+    <Select
+      defaultValue={locale}
+      onValueChange={handleChange}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+    >
+      <SelectTrigger className="w-[100px]">
+        <SelectValue placeholder="Language" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="en">English</SelectItem>
+        <SelectItem value="ar">العربية</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }
