@@ -13,10 +13,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -25,20 +22,17 @@ import { MenuIcon } from "lucide-react";
 
 export default function Navigation() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const locale = useLocale();
 
   return isDesktop ? (
-    <Menu />
+    <Menu isDesktop={isDesktop} />
   ) : (
-    <Drawer>
+    <Drawer direction={locale === "ar" ? "right" : "left"}>
       <DrawerTrigger>
         <MenuIcon />
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-          <DrawerDescription>This action cannot be undone.</DrawerDescription>
-        </DrawerHeader>
-        <Menu />
+        <Menu isDesktop={isDesktop} />
         <DrawerFooter>
           <DrawerClose>
             <Button variant="outline">Cancel</Button>
@@ -49,11 +43,11 @@ export default function Navigation() {
   );
 }
 
-const Menu = () => {
+const Menu = ({ isDesktop }: { isDesktop: boolean }) => {
   const t = useTranslations("default.navbar.links");
   const locale = useLocale();
   return (
-    <NavigationMenu dir={locale === "ar" ? "rtl" : "ltr"}>
+    <NavigationMenu isDesktop={isDesktop} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationLink href="/">{t("home")}</NavigationLink>
