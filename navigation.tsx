@@ -14,14 +14,15 @@ export const localePrefix =
 
 export const pathnames = {
   "/": "/",
-  "/dashboard": "/dashboard",
-  "/blog": "/blog",
-  "/sign-in": "/sign-in",
-  "/sign-up": "/sign-up",
   "/about": {
     en: "/about",
     ar: `/${encodeURIComponent("حول")}`,
   },
+  "/blog": "/blog",
+  "/blog/[slug]": "/blog/[slug]",
+  "/dashboard": "/dashboard",
+  "/sign-in": "/sign-in",
+  "/sign-up": "/sign-up",
 } satisfies Pathnames<typeof locales>;
 
 export const { Link, redirect, usePathname, useRouter } =
