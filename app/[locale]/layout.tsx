@@ -8,10 +8,11 @@ import {
 } from "next-intl/server";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 
-import "../globals.css";
+import { locales } from "@/lib/navigation";
 import Header from "@/components/Header";
 import MyClerkProvider from "@/components/MyClerkProvider";
-import { locales } from "@/lib/navigation";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import "../globals.css";
 
 type Props = {
   children: React.ReactNode;
@@ -56,10 +57,17 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body>
-          <MyClerkProvider>
-            <Header />
-            <main>{children}</main>
-          </MyClerkProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            storageKey="next-intl-clerk-theme"
+          >
+            <MyClerkProvider>
+              <Header />
+              <main>{children}</main>
+            </MyClerkProvider>
+          </ThemeProvider>
         </body>
       </NextIntlClientProvider>
     </html>

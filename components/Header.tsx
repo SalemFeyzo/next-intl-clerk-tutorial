@@ -2,6 +2,7 @@ import { Link } from "@/lib/navigation";
 import Navigation from "./Navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 export default async function Header() {
   return (
@@ -11,6 +12,7 @@ export default async function Header() {
       </Link>
       <Navigation />
       <div className="grow" />
+      <ThemeSwitcher />
       <LocaleSwitcher />
       <SignedIn>
         <div className="hidden sm:block">
