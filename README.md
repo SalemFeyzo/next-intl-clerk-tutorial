@@ -393,7 +393,7 @@ export default getRequestConfig(async ({ locale }) => {
 
 After that go to `next.config.mjs` in the project root directory and add `next-intl`:
 
-```mjs
+```js
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n.tsx");
@@ -408,7 +408,7 @@ export default withNextIntl(nextConfig);
 
 Now create `.env.local` file:
 
-```txt
+```bash
 NODE_ENV=development
 SITE_URL=http://localhost:3000
 NEXT_PUBLIC_LOCALE_PREFIX=as-needed
