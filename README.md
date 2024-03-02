@@ -34,6 +34,8 @@ In this guide you will learn how to set up internationalization (i18n) with auth
   - [2.15 next-intl LocaleSwitcher Component](#localeswitcher-component)
   - [2.16 next-intl Header Component](#header-component)
   - [2.17 next-intl Add Header Component to The RootLayout](#add-header-component-to-the-rootlayout-in-applocale-directory)
+  - [2.18 Add google fonts](#add-google-fonts-to-applocalelayouttsx)
+  - [2.19 Add support for `SSG`](#add-support-for-ssg)
 - [2 Clerk Setup](#clerk-setup)
   - [2.1 Clerk Installation](#clerk-installation)
   - [2.2 Clerk Environment Variables](#clerk-environment-variables)
@@ -703,6 +705,69 @@ export default function RootLayout({ children, params: { locale } }: Props) {
     </html>
   );
 }
+```
+
+### Add google fonts to `app/[locale]/layout.tsx`:
+
+```diff
+....
++ import { Inter, Cairo } from "next/font/google";
+....
++ const inter = Inter({ subsets: ["latin"] });
++ const cairo = Cairo({ subsets: ["arabic"] });
+....
+export default function LocaleLayout({ children, params: { locale } }: Props) {
+  const messages = useMessages();
+
+  return (
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+-        <body>
++        <body className={locale === "ar" ? cairo.className : inter.className}>
+              <Header />
+              <main>{children}</main>
+        </body>
+      </NextIntlClientProvider>
+    </html>
+  );
+}
+
+```
+
+### Add support for `SSG`:
+
+for the `layout.tsx`:
+
+```diff
+....
+import {
+  getFormatter,
+  getNow,
+  getTimeZone,
+  getTranslations,
++  unstable_setRequestLocale,
+} from "next-intl/server";
+
++ import { locales } from "@/lib/navigation";
+....
++ export function generateStaticParams() {
++  return locales.map((locale) => ({ locale }));
++}
+....
+export default function LocaleLayout({ children, params: { locale } }: Props) {
+  const messages = useMessages();
++  unstable_setRequestLocale(locale);
+
+  return (
+    .....
+}
+
+```
+
+Then for all other pages add:
+
+```ts
+unstable_setRequestLocale(locale);
 ```
 
 ## Clerk Setup:
