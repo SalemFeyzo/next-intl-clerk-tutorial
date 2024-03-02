@@ -28,11 +28,12 @@ In this guide you will learn how to set up internationalization (i18n) with auth
   - [2.9 next-intl Provider and Localized Metadata](#next-intl-provider-and-localized-metadata-in-applocalelayouttsx)
   - [2.10 next-intl Dynamic OpenGraph Image ](#dynamic-opengraph-image)
   - [2.11 next-intl Not Found page](#not-found-page-and-other-pages-translations)
-  - [2.12 next-intl Custom NavigationLink Component](#custom-navigationlink-component)
-  - [2.13 next-intl Navigation Component](#navigation-component)
-  - [2.14 next-intl LocaleSwitcher Component](#localeswitcher-component)
-  - [2.15 next-intl Header Component](#header-component)
-  - [2.16 next-intl Add Header Component to The RootLayout](#add-header-component-to-the-rootlayout-in-applocale-directory)
+  - [2.12 avoid redirecting to the `nextjs` original `not-found` page](#to-avoid-redirecting-to-the-nextjs-original-not-found-page-create-restpagetsx-inside-theapplocale-directory)
+  - [2.13 next-intl Custom NavigationLink Component](#custom-navigationlink-component)
+  - [2.14 next-intl Navigation Component](#navigation-component)
+  - [2.15 next-intl LocaleSwitcher Component](#localeswitcher-component)
+  - [2.16 next-intl Header Component](#header-component)
+  - [2.17 next-intl Add Header Component to The RootLayout](#add-header-component-to-the-rootlayout-in-applocale-directory)
 - [2 Clerk Setup](#clerk-setup)
   - [2.1 Clerk Installation](#clerk-installation)
   - [2.2 Clerk Environment Variables](#clerk-environment-variables)
@@ -289,7 +290,7 @@ For example `en.json`:
 }
 ```
 
-Then create `i18n.tsx` and `navigation.tsx` outside the `app` directory.
+Then create `i18n.tsx` and `navigation.tsx` outside the `app` directory in the `lib` directory.
 
 ### `next-intl` Navigation:
 
@@ -305,7 +306,7 @@ export const defaultLocale = "en";
 
 export const localeDetection = true;
 
-export const locales = ["en", "ar", "tr"] as const;
+export const locales = ["en", "ar"] as const;
 
 export const localePrefix =
   process.env.NEXT_PUBLIC_LOCALE_PREFIX === "never" ? "never" : "as-needed";
@@ -318,7 +319,6 @@ export const pathnames = {
   "/about": {
     en: "/about",
     ar: `/${encodeURIComponent("حول")}`,
-    tr: `/${encodeURIComponent("hakkında")}`,
   },
 } satisfies Pathnames<typeof locales>;
 
@@ -346,7 +346,7 @@ export default getRequestConfig(async ({ locale }) => {
 
   const now = headers().get("x-now");
   const timeZone = headers().get("x-time-zone") ?? "Europe/Vienna";
-  const messages = (await import(`./messages/${locale}.json`)).default;
+  const messages = (await import(`../messages/${locale}.json`)).default;
 
   return {
     now: now ? new Date(now) : undefined,
@@ -394,7 +394,7 @@ After that go to `next.config.mjs` in the project root directory and add `next-i
 ```mjs
 import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin("./i18n.tsx");
+const withNextIntl = createNextIntlPlugin("./lib/i18n.tsx");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
@@ -424,7 +424,7 @@ import {
   defaultLocale,
   localeDetection,
   pathnames,
-} from "@/navigation";
+} from "@/lib/navigation";
 
 export default createMiddleware({
   locales,
@@ -565,6 +565,19 @@ export default function NotFound() {
 
 Then add the corresponding translations to the rest of other pages.
 
+### To avoid redirecting to the `nextjs` original `not-found` page, create `[...rest]/page.tsx` inside the`app/[locale]` directory:
+
+```tsx
+import { notFound } from "next/navigation";
+import type { ServerRuntime } from "next";
+
+export const runtime: ServerRuntime = "edge";
+
+export default function CatchAll() {
+  notFound();
+}
+```
+
 ### Custom NavigationLink component:
 
 Now create `component` directory in the root directory, and inside it create `NavigationLink.tsx`:
@@ -574,7 +587,7 @@ Now create `component` directory in the root directory, and inside it create `Na
 
 import { useSelectedLayoutSegment } from "next/navigation";
 import { ComponentProps } from "react";
-import { Link, pathnames } from "@/navigation";
+import { Link, pathnames } from "@/lib/navigation";
 
 export default function NavigationLink<
   Pathname extends keyof typeof pathnames
@@ -624,7 +637,7 @@ Create `LocaleSwitcher.tsx` in the `component` directory:
 "use client";
 
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/navigation";
+import { usePathname, useRouter } from "@/lib/navigation";
 
 export default function LocaleSwitcher() {
   const locale = useLocale();
@@ -639,7 +652,6 @@ export default function LocaleSwitcher() {
     <select value={locale} onChange={handleChange}>
       <option value="en">English</option>
       <option value="ar">العربية</option>
-      <option value="tr">Türkçe</option>
     </select>
   );
 }
@@ -650,7 +662,7 @@ export default function LocaleSwitcher() {
 Create `Header.tsx` in the `component` directory:
 
 ```tsx
-import { Link } from "@/navigation";
+import { Link } from "@/lib/navigation";
 import Navigation from "./Navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
 
@@ -740,7 +752,7 @@ Now let's make `MyClerkProvider.tsx` inside `component` directory:
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { arSA, enUS, trTR } from "@clerk/localizations";
+import { arSA, enUS } from "@clerk/localizations";
 import { useLocale } from "next-intl";
 
 type Props = {
@@ -752,7 +764,7 @@ export default function MyClerkProvider({ children }: Props) {
 
   return (
     <ClerkProvider
-      localization={locale === "ar" ? arSA : locale === "tr" ? trTR : enUS}
+      localization={locale === "ar" ? arSA : enUS}
       appearance={{
         layout: {
           socialButtonsPlacement: "top",
@@ -810,7 +822,7 @@ import {
   defaultLocale,
   localeDetection,
   pathnames,
-} from "@/navigation";
+} from "@/lib/navigation";
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -842,22 +854,21 @@ Edit the `Navigation.tsx` component:
 ```tsx
 import { useTranslations } from "next-intl";
 import NavigationLink from "./NavigationLink";
-import { auth } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Navigation() {
   const t = useTranslations("default.navbar.links");
-  const { userId } = auth();
 
   return (
     <nav style={{ display: "flex", gap: 10 }}>
       <NavigationLink href="/">{t("home")}</NavigationLink>
       <NavigationLink href="/about">{t("about")}</NavigationLink>
-      {!userId && (
+      <SignedOut>
         <NavigationLink href="/sign-in">{t("sign-in")}</NavigationLink>
-      )}
-      {userId && (
+      </SignedOut>
+      <SignedIn>
         <NavigationLink href="/dashboard">{t("dashboard")}</NavigationLink>
-      )}
+      </SignedIn>
     </nav>
   );
 }
@@ -909,11 +920,19 @@ The `sign-in/[[...sign-in]]/page.tsx`:
 
 ```tsx
 import { SignIn } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
+import type { ServerRuntime } from "next";
 
-export default function Page() {
+export const runtime: ServerRuntime = "edge";
+
+export default function MySignIn() {
+  const t = useTranslations("default.pages.sign-in");
   return (
-    <div className="flex justify-center py-24">
-      <SignIn signUpUrl="/sign-up" afterSignInUrl="/dashboard" />
+    <div>
+      <h1>{t("title")}</h1>
+      <div className="flex justify-center py-24">
+        <SignIn signUpUrl="/sign-up" afterSignInUrl="/dashboard" />
+      </div>
     </div>
   );
 }
@@ -923,11 +942,19 @@ The `sign-up/[[...sign-up]]/page.tsx`:
 
 ```tsx
 import { SignUp } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
+import type { ServerRuntime } from "next";
 
-export default function Page() {
+export const runtime: ServerRuntime = "edge";
+
+export default function MySignUp() {
+  const t = useTranslations("default.pages.sign-up");
   return (
-    <div className="flex justify-center py-24">
-      <SignUp signInUrl="/sign-in" afterSignUpUrl="/dashboard" />
+    <div>
+      <h1>{t("title")}</h1>
+      <div className="flex justify-center py-24">
+        <SignUp signInUrl="/sign-in" afterSignUpUrl="/dashboard" />
+      </div>
     </div>
   );
 }
