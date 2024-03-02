@@ -1,5 +1,9 @@
 import { getPost, getPosts } from "@/lib/contentful";
 import { unstable_setRequestLocale } from "next-intl/server";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkToc from "remark-toc";
+import rehypeSlug from "rehype-slug";
 
 // export const revalidate = 1000;
 
@@ -16,13 +20,19 @@ export default async function Post({
 }) {
   unstable_setRequestLocale(locale);
   const post = await getPost(slug);
-
+  const postBody = post.items[0].fields.body[locale] as string;
   return (
-    <div>
-      {slug}/{locale}
-      <div>
-        <h1>{post.items[0].fields.title[locale] as string}</h1>
-      </div>
-    </div>
+    <article>
+      <Markdown
+        remarkPlugins={[
+          [remarkGfm],
+          [remarkToc, { tight: true, maxDepth: 5, ordered: true, prefix: "" }],
+        ]}
+        rehypePlugins={[rehypeSlug]}
+        className="mt-5 mx-auto prose prose-zinc dark:prose-invert"
+      >
+        {postBody}
+      </Markdown>
+    </article>
   );
 }

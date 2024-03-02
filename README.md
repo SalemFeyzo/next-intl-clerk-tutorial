@@ -113,7 +113,7 @@ Now let's add rules to `.eslintrc.json`:
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "no-console": "warn"
   }
 }
@@ -121,7 +121,7 @@ Now let's add rules to `.eslintrc.json`:
 
 Clean up the `app/page.tsx`:
 
-```ts
+```tsx
 export default function Home() {
   return (
     <div>
@@ -133,7 +133,7 @@ export default function Home() {
 
 And `app/layout.tsx`:
 
-```ts
+```tsx
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -166,7 +166,7 @@ And let's remove the default styles in `app/globals.css`:
 
 And `tailwind.config.ts`:
 
-```ts
+```tsx
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -418,7 +418,7 @@ NEXT_PUBLIC_LOCALE_PREFIX=as-needed
 
 Now create the `middleware.ts` file in outside the app directory:
 
-```ts
+```tsx
 import createMiddleware from "next-intl/middleware";
 import {
   locales,
