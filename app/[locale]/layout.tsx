@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter, Cairo } from "next/font/google";
 import {
   getFormatter,
   getNow,
@@ -13,6 +14,9 @@ import Header from "@/components/Header";
 import MyClerkProvider from "@/components/MyClerkProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "../globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
+const cairo = Cairo({ subsets: ["arabic"] });
 
 type Props = {
   children: React.ReactNode;
@@ -56,7 +60,7 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <body>
+        <body className={locale === "ar" ? cairo.className : inter.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
