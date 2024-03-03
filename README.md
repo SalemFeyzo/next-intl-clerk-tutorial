@@ -36,14 +36,14 @@ In this guide you will learn how to set up internationalization (i18n) with auth
   - [2.17 next-intl Add Header Component to The RootLayout](#add-header-component-to-the-rootlayout-in-applocale-directory)
   - [2.18 Add google fonts](#add-google-fonts-to-applocalelayouttsx)
   - [2.19 Add support for `SSG`](#add-support-for-ssg)
-- [2 Clerk Setup](#clerk-setup)
-  - [2.1 Clerk Installation](#clerk-installation)
-  - [2.2 Clerk Environment Variables](#clerk-environment-variables)
-  - [2.3 Clerk Environment Variables Types](#clerk-environment-variables-types)
-  - [2.4 Clerk Provider](#clerk-provider)
-  - [2.5 Clerk Middleware](#clerk-middleware)
-  - [2.6 Header and Navbar Protected Items](#header-and-navbar-protected-items)
-  - [2.7 Clerk Sign In and Sign Up Pages](#clerk-sign-in-and-sign-up-pages)
+- [3 Clerk Setup](#clerk-setup)
+  - [3.1 Clerk Installation](#clerk-installation)
+  - [3.2 Clerk Environment Variables](#clerk-environment-variables)
+  - [3.3 Clerk Environment Variables Types](#clerk-environment-variables-types)
+  - [3.4 Clerk Provider](#clerk-provider)
+  - [3.5 Clerk Middleware](#clerk-middleware)
+  - [3.6 Header and Navbar Protected Items](#header-and-navbar-protected-items)
+  - [3.7 Clerk Sign In and Sign Up Pages](#clerk-sign-in-and-sign-up-pages)
 
 ## Project setup:
 
