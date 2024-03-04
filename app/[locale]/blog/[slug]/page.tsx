@@ -2,7 +2,7 @@ import MarkdownRender from "@/components/MarkdownRender";
 import { getPost, getPosts } from "@/lib/contentful";
 import { unstable_setRequestLocale } from "next-intl/server";
 
-// export const revalidate = 1000;
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   const { items } = await getPosts();
