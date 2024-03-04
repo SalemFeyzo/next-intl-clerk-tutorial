@@ -1,5 +1,7 @@
 # [Next-intl](https://next-intl-docs.vercel.app/) and [Clerk](https://clerk.com/) with [Next.js 14](https://nextjs.org/) AppRouter
 
+The [demo](https://next-intl-clerk-tutorial-iota.vercel.app/)
+
 ## Recourses:
 
 - next-intl docs: https://next-intl-docs.vercel.app/docs/getting-started/app-router
@@ -571,9 +573,6 @@ Then add the corresponding translations to the rest of other pages.
 
 ```tsx
 import { notFound } from "next/navigation";
-import type { ServerRuntime } from "next";
-
-export const runtime: ServerRuntime = "edge";
 
 export default function CatchAll() {
   notFound();
@@ -764,7 +763,7 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
 
 ```
 
-Then for all other pages add:
+Then for other pages add:(Do not add it for `[..rest]/page`, `sign-in` and `sign-up` pages)
 
 ```ts
 unstable_setRequestLocale(locale);
@@ -986,9 +985,6 @@ The `sign-in/[[...sign-in]]/page.tsx`:
 ```tsx
 import { SignIn } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import type { ServerRuntime } from "next";
-
-export const runtime: ServerRuntime = "edge";
 
 export default function MySignIn() {
   const t = useTranslations("default.pages.sign-in");
@@ -1008,9 +1004,6 @@ The `sign-up/[[...sign-up]]/page.tsx`:
 ```tsx
 import { SignUp } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import type { ServerRuntime } from "next";
-
-export const runtime: ServerRuntime = "edge";
 
 export default function MySignUp() {
   const t = useTranslations("default.pages.sign-up");
