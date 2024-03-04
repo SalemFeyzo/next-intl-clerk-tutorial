@@ -18,7 +18,7 @@ export default function CopyCode({ pre }: ICopyCode) {
   const language = pre.children[0]?.props.className.replace(/language-/g, "");
 
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="relative overflow-x-hidden" dir="ltr">
       <button
         className="right-3 top-7 absolute z-40 mr-2 mt-5"
         data-tip="Copy Code"
