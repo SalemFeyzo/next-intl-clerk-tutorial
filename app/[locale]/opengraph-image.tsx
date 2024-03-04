@@ -1,8 +1,5 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
-import type { ServerRuntime } from "next";
-
-export const runtime: ServerRuntime = "edge";
 
 type Props = {
   params: {
