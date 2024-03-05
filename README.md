@@ -37,15 +37,15 @@ In this tutorial, you'll learn how to:
 4. Additional Configuration:
    We'll cover additional configurations such as setting up dynamic OpenGraph images, customizing the not-found page, adding Google Fonts, and supporting SSG (Static Site Generation).
 
-- Project Setup:
+- **Project Setup**:
 
 We'll start by creating a new Next.js AppRouter project using the provided setup instructions. This includes configuring TypeScript, ESLint, Tailwind CSS, and enabling the AppRouter option.
 
-- Next-intl Setup:
+- **Next-intl Setup**:
 
 We'll guide you through the installation of Next-intl, directory setup, message handling, navigation setup, configuration file setup, middleware integration, and additional components such as custom NavigationLink and Header.
 
-- Clerk Setup:
+- **Clerk Setup**:
 
 You'll learn how to install Clerk, set up environment variables, configure Clerk providers, middleware, and handle protected routes in the navigation component. We'll also cover the setup of Sign In and Sign Up pages using Clerk's components.
 
