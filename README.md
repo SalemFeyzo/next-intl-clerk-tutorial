@@ -1,7 +1,5 @@
 # [Next-intl](https://next-intl-docs.vercel.app/) and [Clerk](https://clerk.com/) with [Next.js 14](https://nextjs.org/) AppRouter
 
-The [demo](https://next-intl-clerk-tutorial-iota.vercel.app/)
-
 In this guide, we'll walk through the process of setting up internationalization (i18n) with authentication in your Next.js application using Next-intl and Clerk, leveraging Next.js 14's AppRouter. We'll cover everything from project setup to integrating Next-intl for i18n support and Clerk for authentication.
 
 ## Recourses:
@@ -14,6 +12,10 @@ In this guide, we'll walk through the process of setting up internationalization
   ```
 - Clerk Docs: https://clerk.com/docs/quickstarts/nextjs
 - Clerk + next-intl middleware Docs: https://clerk.com/docs/references/nextjs/auth-middleware#use-before-auth-to-execute-middleware-before-authentication
+
+## Demo:
+
+Check out the [demo](https://next-intl-clerk-tutorial-iota.vercel.app/) hosted on Vercel to see the implemented features in action.
 
 ## Overview:
 
