@@ -2,6 +2,8 @@
 
 The [demo](https://next-intl-clerk-tutorial-iota.vercel.app/)
 
+In this guide, we'll walk through the process of setting up internationalization (i18n) with authentication in your Next.js application using Next-intl and Clerk, leveraging Next.js 14's AppRouter. We'll cover everything from project setup to integrating Next-intl for i18n support and Clerk for authentication.
+
 ## Recourses:
 
 - next-intl docs: https://next-intl-docs.vercel.app/docs/getting-started/app-router
@@ -13,7 +15,35 @@ The [demo](https://next-intl-clerk-tutorial-iota.vercel.app/)
 - Clerk Docs: https://clerk.com/docs/quickstarts/nextjs
 - Clerk + next-intl middleware Docs: https://clerk.com/docs/references/nextjs/auth-middleware#use-before-auth-to-execute-middleware-before-authentication
 
-In this guide you will learn how to set up internationalization (i18n) with auth in your Next.js app (AppRouter).
+## Overview:
+
+In this tutorial, you'll learn how to:
+
+1. Set up a Next.js 14 AppRouter project:
+   We'll start by creating a new Next.js application with the AppRouter option enabled, TypeScript, ESLint, and Tailwind CSS.
+
+2. Configure Next-intl for i18n support:
+   We'll cover the installation of Next-intl, directory setup, message handling, navigation, configuration file setup, and middleware integration for i18n support.
+
+3. Integrate Clerk for authentication:
+   You'll learn how to install Clerk, set up environment variables, configure Clerk providers, middleware, and handle protected routes in the navigation component.
+
+4. Additional Configuration:
+   We'll cover additional configurations such as setting up dynamic OpenGraph images, customizing the not-found page, adding Google Fonts, and supporting SSG (Static Site Generation).
+
+## Project Setup:
+
+We'll start by creating a new Next.js AppRouter project using the provided setup instructions. This includes configuring TypeScript, ESLint, Tailwind CSS, and enabling the AppRouter option.
+
+## Next-intl Setup:
+
+We'll guide you through the installation of Next-intl, directory setup, message handling, navigation setup, configuration file setup, middleware integration, and additional components such as custom NavigationLink and Header.
+
+## Clerk Setup:
+
+You'll learn how to install Clerk, set up environment variables, configure Clerk providers, middleware, and handle protected routes in the navigation component. We'll also cover the setup of Sign In and Sign Up pages using Clerk's components.
+
+By following this tutorial, you'll have a comprehensive understanding of how to set up internationalization and authentication in your Next.js application using Next-intl and Clerk with the AppRouter. Let's get started!
 
 - [1 Project Setup](#project-setup)
 - [2 Next-intl Setup](#next-intl-setup)
@@ -27,8 +57,12 @@ In this guide you will learn how to set up internationalization (i18n) with auth
   - [2.8 next-intl Messages and Environment Variables Types](#messages-and-environment-variables-types)
     - [2.8.1 Messages Types](#messages-types)
     - [2.8.2 Environment Variables Types](#environment-variables-types)
-  - [2.9 next-intl Provider and Localized Metadata](#next-intl-provider-and-localized-metadata-in-applocalelayouttsx)
-  - [2.10 next-intl Dynamic OpenGraph Image ](#dynamic-opengraph-image)
+  - [2.9 next-intl Provider](#next-intl-provider)
+  - [2.10 SEO](#seo)
+    - [2.10.1 Localized Metadata](#localized-metadata-in-applocalelayouttsx)
+    - [2.10.1 next-intl Dynamic OpenGraph Image ](#dynamic-opengraph-image)
+    - [2.10.2 Sitemap](#sitemap)
+    - [2.11.3 Robots](#robots)
   - [2.11 next-intl Not Found page](#not-found-page-and-other-pages-translations)
   - [2.12 avoid redirecting to the `nextjs` original `not-found` page](#to-avoid-redirecting-to-the-nextjs-original-not-found-page-create-restpagetsx-inside-theapplocale-directory)
   - [2.13 next-intl Custom NavigationLink Component](#custom-navigationlink-component)
@@ -299,8 +333,10 @@ Then create `i18n.tsx` and `navigation.tsx` outside the `app` directory in the `
 ### `next-intl` Navigation:
 
 the `navigation.tsx`:
+this code sets up configurations for handling internationalized routing in a Next.js application using `next-intl`, including defining supported locales, specifying default locale, and configuring localized route paths. It also provides functions for creating localized navigation links based on these configurations
 
 ```tsx
+// /lib/navigation.tsx
 import {
   createLocalizedPathnamesNavigation,
   Pathnames,
@@ -337,8 +373,10 @@ export const { Link, redirect, usePathname, useRouter } =
 ### `next-intl` Config File:
 
 The `i18n.tsx`:
+this code sets up the configuration for handling internationalization in a Next.js application, including retrieving locale-specific messages, handling errors, and providing fallback options.
 
 ```tsx
+//  /lib/i18n.tsx
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { getRequestConfig } from "next-intl/server";
@@ -472,16 +510,11 @@ declare namespace NodeJS {
 }
 ```
 
-### `next-intl` Provider and localized metadata in `app/[locale]/layout.tsx`:
+### `next-intl` Provider`:
 
 ```tsx
+// /app/[locale]/layout.tsx
 import type { Metadata } from "next";
-import {
-  getFormatter,
-  getNow,
-  getTimeZone,
-  getTranslations,
-} from "next-intl/server";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 
 import "../globals.css";
@@ -491,6 +524,35 @@ type Props = {
   params: { locale: string };
 };
 
+export default function RootLayout({ children, params: { locale } }: Props) {
+  const messages = useMessages();
+
+  return (
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <body>
+          <main>{children}</main>
+        </body>
+      </NextIntlClientProvider>
+    </html>
+  );
+}
+```
+
+### SEO:
+
+#### Localized metadata in `app/[locale]/layout.tsx:
+
+```tsx
+// /app/[locale]/layout.tsx
+......
+import {
+  getFormatter,
+  getNow,
+  getTimeZone,
+  getTranslations,
+} from "next-intl/server";
+.....
 export async function generateMetadata({
   params: { locale },
 }: Omit<Props, "children">): Promise<Metadata> {
@@ -514,23 +576,10 @@ export async function generateMetadata({
     },
   };
 }
-
-export default function RootLayout({ children, params: { locale } }: Props) {
-  const messages = useMessages();
-
-  return (
-    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        <body>
-          <main>{children}</main>
-        </body>
-      </NextIntlClientProvider>
-    </html>
-  );
-}
+......
 ```
 
-### Dynamic OpenGraph Image:
+#### Dynamic OpenGraph Image:
 
 Create a new file called `opengraph-image.tsx` in `app/[locale]/` directory:
 
@@ -550,11 +599,57 @@ export default async function Image({ params: { locale } }: Props) {
 }
 ```
 
+#### Sitemap:
+
+```ts
+// /app/sitemap.ts
+import type { MetadataRoute } from "next";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const siteUrl = process.env.SITE_URL;
+  return [
+    {
+      url: `${siteUrl}/`,
+    },
+    {
+      url: `${siteUrl}/ar`,
+    },
+    {
+      url: `${siteUrl}/about`,
+    },
+    {
+      url: `${siteUrl}/ar/${encodeURIComponent("حول")}`,
+    },
+  ];
+}
+```
+
+#### Robots:
+
+```ts
+// /app/robots.ts
+import { MetadataRoute } from "next";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/dashboard"],
+      },
+    ],
+    sitemap: `${process.env.SITE_URL}/sitemap.xml`,
+  };
+}
+```
+
 ### Not found page and other pages' translations:
 
 Create a new file called `not-found.tsx` in `app/[locale]/` directory:
 
 ```tsx
+// /app/[locale]/not-found.tsx
 import { useTranslations } from "next-intl";
 
 export default function NotFound() {
@@ -572,6 +667,7 @@ Then add the corresponding translations to the rest of other pages.
 ### To avoid redirecting to the `nextjs` original `not-found` page, create `[...rest]/page.tsx` inside the`app/[locale]` directory:
 
 ```tsx
+// /ap/[locale]/[...rest]/page.tsx
 import { notFound } from "next/navigation";
 
 export default function CatchAll() {
@@ -581,9 +677,10 @@ export default function CatchAll() {
 
 ### Custom NavigationLink component:
 
-Now create `component` directory in the root directory, and inside it create `NavigationLink.tsx`:
+Now create `components` directory in the root directory, and inside it create `NavigationLink.tsx`:
 
 ```tsx
+// /components/NavigationLink.tsx
 "use client";
 
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -610,9 +707,10 @@ export default function NavigationLink<
 
 ### Navigation Component:
 
-create `Navigation.tsx` in the `component` directory:
+create `Navigation.tsx` in the `components` directory:
 
 ```tsx
+// /components/Navigation.tsx
 import { useTranslations } from "next-intl";
 import NavigationLink from "./NavigationLink";
 
@@ -632,9 +730,10 @@ export default function Navigation() {
 
 ### LocaleSwitcher Component:
 
-Create `LocaleSwitcher.tsx` in the `component` directory:
+Create `LocaleSwitcher.tsx` in the `components` directory:
 
 ```tsx
+// components/LocaleSwitcher.tsx
 "use client";
 
 import { useLocale } from "next-intl";
@@ -660,9 +759,10 @@ export default function LocaleSwitcher() {
 
 ### Header Component:
 
-Create `Header.tsx` in the `component` directory:
+Create `Header.tsx` in the `components` directory:
 
 ```tsx
+// /components/Header.tsx
 import { Link } from "@/lib/navigation";
 import Navigation from "./Navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
@@ -684,6 +784,7 @@ export default async function Header() {
 ### Add Header Component to the RootLayout in `app/[locale]/` directory:
 
 ```diff
+// /app/[locale]/layout.tsx
 ....
 import { NextIntlClientProvider, useMessages } from "next-intl";
 + import Header from "@/components/Header";
@@ -709,6 +810,7 @@ export default function RootLayout({ children, params: { locale } }: Props) {
 ### Add google fonts to `app/[locale]/layout.tsx`:
 
 ```diff
+// /app/[locale]/layout.tsx
 ....
 + import { Inter, Cairo } from "next/font/google";
 ....
@@ -738,6 +840,7 @@ export default function LocaleLayout({ children, params: { locale } }: Props) {
 for the `layout.tsx`:
 
 ```diff
+// /app/[locale]/layout.tsx
 ....
 import {
   getFormatter,
@@ -810,9 +913,10 @@ declare namespace NodeJS {
 
 ### Clerk Provider:
 
-Now let's make `MyClerkProvider.tsx` inside `component` directory:
+Now let's make `MyClerkProvider.tsx` inside `components` directory:
 
 ```tsx
+// /components/MyClerkProvider.tsx
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
@@ -846,6 +950,7 @@ export default function MyClerkProvider({ children }: Props) {
 Now add the provider to the `layout.tsx` in `app/[locale]/`:
 
 ```diff
+// /app/[locale]/layout.tsx
 .....
 
 
@@ -916,6 +1021,7 @@ export const config = {
 Edit the `Navigation.tsx` component:
 
 ```tsx
+// /components/Navigation.tsx
 import { useTranslations } from "next-intl";
 import NavigationLink from "./NavigationLink";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -941,6 +1047,7 @@ export default function Navigation() {
 And `Header.tsx`:
 
 ```tsx
+// /components/Header.tsx
 import { Link } from "@/navigation";
 import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
 import Navigation from "./Navigation";
@@ -983,6 +1090,7 @@ export default async function Header() {
 The `sign-in/[[...sign-in]]/page.tsx`:
 
 ```tsx
+// /app/[locale]/sign-in/[[...sign-in]]/page.tsx
 import { SignIn } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 
@@ -1002,6 +1110,7 @@ export default function MySignIn() {
 The `sign-up/[[...sign-up]]/page.tsx`:
 
 ```tsx
+// /app/[locale]/sign-in/sign-up/[[...sign-up]]/page.tsx
 import { SignUp } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 
